@@ -17,7 +17,7 @@ def first_elem_intersection_2(str1: str, str2: str, str3: str):
 
 def day3_1():
     res = 0
-    with open('day3_input.txt', 'r') as file:
+    with open('../res/day3_input.txt', 'r') as file:
         for line in file.readlines():
             res += priorities[first_elem_intersection(line[0:len(line) // 2],
                                                       line[len(line) // 2:].replace('\n', ''))]
@@ -27,7 +27,7 @@ def day3_1():
 
 def day3_2():
     res = 0
-    with open('day3_input.txt', 'r') as file:
+    with open('../res/day3_input.txt', 'r') as file:
         lines = file.readlines()
         for i in range(len(lines)):
             if (i + 1) % 3 == 0:
@@ -40,7 +40,3 @@ def day3_2():
                     res += priorities[c]
 
     return res
-
-
-if __name__ == '__main__':
-    print(day3_2())

@@ -34,7 +34,7 @@ def calculate_score(chosen_values):
 
 
 def day2_1():
-    with open('day2_input.txt', 'r') as file:
+    with open('../res/day2_input.txt', 'r') as file:
         chosen_values = []
         for line in file.readlines():
             chosen_values.append(line.strip().split(" "))
@@ -43,7 +43,7 @@ def day2_1():
 
 
 def day2_2():
-    with open('day2_input.txt', 'r') as file:
+    with open('../res/day2_input.txt', 'r') as file:
         chosen_values = []
         for line in file.readlines():
             value = line.strip().split(" ")
@@ -83,7 +83,3 @@ def day2_2():
                     chosen_values.append(["C", "X"])
 
         return calculate_score(chosen_values)
-
-
-if __name__ == '__main__':
-    print(day2_2())
