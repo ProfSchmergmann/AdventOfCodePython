@@ -1,33 +1,27 @@
 import numpy as np
 
+from days.day import Day
 
-def day1_1():
-    list = []
 
-    with open('../res/day1_input.txt', 'r') as f_data:
+class Day1(Day):
+
+    def __init__(self):
+        super().__init__(1)
+
+    def preprocess_input(self):
+        list = []
         tmp = 0
-        for line in f_data.readlines():
+        for line in self.get_lines_as_list():
             if line.strip():
                 tmp += int(line)
             else:
                 list.append(tmp)
                 tmp = 0
+        return list
 
-    print(np.max(list))
+    def part_a(self):
+        return np.max(self.preprocess_input())
 
-
-def day1_2():
-    list = []
-
-    with open('../res/day1_input.txt', 'r') as f_data:
-        tmp = 0
-        for line in f_data.readlines():
-            if line.strip():
-                tmp += int(line)
-            else:
-                list.append(tmp)
-                tmp = 0
-
-    sorted = np.sort(list)
-    print(sorted[-1])
-    print(sorted[-1] + sorted[-2] + sorted[-3])
+    def part_b(self):
+        sorted_list = np.sort(self.preprocess_input())
+        return sorted_list[-1] + sorted_list[-2] + sorted_list[-3]

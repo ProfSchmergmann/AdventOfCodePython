@@ -1,35 +1,30 @@
-def day6_1():
-    with open('res/day6_input.txt', 'r') as file:
-        line = file.readlines()[0]
-        i = 0
-        window = []
-        for c in line:
-            if len(window) == 4:
-                return i
-            if window.__contains__(c):
-                idx = window.index(c)
-                window = window[idx + 1:]
-                window.append(c)
-                i += 1
-                continue
-            window.append(c)
-            i += 1
-        return i
+from days.day import Day
 
-def day6_2():
-    with open('res/day6_input.txt', 'r') as file:
-        line = file.readlines()[0]
-        i = 0
-        window = []
-        for c in line:
-            if len(window) == 14:
-                return i
-            if window.__contains__(c):
-                idx = window.index(c)
-                window = window[idx + 1:]
-                window.append(c)
-                i += 1
-                continue
+
+def process(line: str, window_length: int):
+    i = 0
+    window = []
+    for c in line:
+        if len(window) == window_length:
+            return i
+        if window.__contains__(c):
+            idx = window.index(c)
+            window = window[idx + 1:]
             window.append(c)
             i += 1
-        return i
+            continue
+        window.append(c)
+        i += 1
+    return i
+
+
+class Day6(Day):
+
+    def __init__(self):
+        super().__init__(6)
+
+    def part_a(self):
+        return process(self.get_lines_as_list()[0], 4)
+
+    def part_b(self):
+        return process(self.get_lines_as_list()[0], 14)

@@ -1,3 +1,6 @@
+from days.day import Day
+
+
 def calculate_score(chosen_values):
     res = 0
     for i in range(len(chosen_values)):
@@ -33,19 +36,20 @@ def calculate_score(chosen_values):
     return res
 
 
-def day2_1():
-    with open('../res/day2_input.txt', 'r') as file:
+class Day2(Day):
+    def __init__(self):
+        super().__init__(2)
+
+    def part_a(self):
         chosen_values = []
-        for line in file.readlines():
+        for line in self.get_lines_as_list():
             chosen_values.append(line.strip().split(" "))
 
         return calculate_score(chosen_values)
 
-
-def day2_2():
-    with open('../res/day2_input.txt', 'r') as file:
+    def part_b(self):
         chosen_values = []
-        for line in file.readlines():
+        for line in self.get_lines_as_list():
             value = line.strip().split(" ")
             # Loose
             if value[1] == "X":
