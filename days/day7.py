@@ -44,6 +44,12 @@ class Directory:
                 res += '\n'
         return res
 
+    def __eq__(self, other):
+        return self.get_size() == other.get_size()
+
+    def __lt__(self, other):
+        return self.get_size() < other.get_size()
+
 
 class File:
     def __init__(self, name: str, parent: Directory, size: int):
@@ -71,11 +77,9 @@ def get_dir_from_data(lines: list[str]):
                 current_dir = current_dir.parent
         elif lines[i].startswith('$ cd'):
             dir_name = lines[i].split('cd')[1].replace('\n', '').strip()
-            tmp = None
             for d in current_dir.directories:
                 if d.name == dir_name:
-                    tmp = d
-            current_dir = tmp if tmp is not None else Directory(dir_name, current_dir)
+                    current_dir = d
         else:
             if lines[i].startswith('dir'):
                 dir_name = lines[i].split(' ')[1].replace('\n', '')
@@ -96,10 +100,12 @@ def get_dirs_with_max_size_rek(root_dir: Directory, max_size: int):
     return dirs
 
 
-def get_dirs(root_dir: Directory):
+def get_dirs_with_min_size_rek(root_dir: Directory, min_size):
     dirs: list[Directory] = [root_dir]
     for d in root_dir.directories:
-        dirs += get_dirs(d)
+        if d.get_size() >= min_size:
+            dirs.append(d)
+        dirs += get_dirs_with_min_size_rek(d, min_size)
     return dirs
 
 
@@ -119,13 +125,9 @@ class Day7(Day):
     def part_b(self):
         root_dir: Directory = get_dir_from_data(self.lines)
         root_dir_size = root_dir.get_size()
-        print(f'root_size: {root_dir_size}')
         unused_space = self.total_disk_space - root_dir_size
-        print(f'unused_space: {unused_space}')
         space_needed = self.space_to_run_update - unused_space
-        print(f'space_needed: {space_needed}')
-        sorted_dirs = sorted(get_dirs(get_dir_from_data(self.lines)), key=lambda x: x.get_size(), reverse=False)
-        # print('\n'.join(str(d.get_size()) for d in sorted_dirs))
+        sorted_dirs = sorted(get_dirs_with_min_size_rek(get_dir_from_data(self.lines), space_needed), reverse=False)
         for d in sorted_dirs:
             if d.get_size() >= space_needed:
                 return d.get_size()
