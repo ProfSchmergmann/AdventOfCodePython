@@ -7,8 +7,8 @@ class Directory:
     def __init__(self, name: str, parent):
         self.name = name
         self.parent = parent
-        self.directories = []
-        self.files = []
+        self.directories: list[Directory] = []
+        self.files: list[File] = []
 
     def get_size(self):
         if len(self.files) == 0 and len(self.directories) == 0:
@@ -36,18 +36,21 @@ class Directory:
             return sub.get_dir(dir_name)
         return 'NA'
 
-    def get_formatted_string(self, indent):
+    def __str__(self, indent=2):
         res = ''
         for i in range(indent):
             res += '  '
-        res += f'- {self.name} (dir):\n'
+        res += f'- {self.name} (dir, size={self.get_size()})'
         if len(self.files) != 0:
-            for f in self.files:
-                res += f.get_formatted_string(indent + 2)
+            res += '\n'
+            for i in range(len(self.files)):
+                res += self.files[i].__str__(indent + 2)
                 res += '\n'
         if len(self.directories) != 0:
-            for d in self.directories:
-                res += d.get_formatted_string(indent + 2)
+            if len(self.files) == 0:
+                res += '\n'
+            for i in range(len(self.directories)):
+                res += self.directories[i].__str__(indent + 2)
                 res += '\n'
         return res
 
@@ -58,7 +61,7 @@ class File:
         self.parent = parent,
         self.size = size
 
-    def get_formatted_string(self, indent):
+    def __str__(self, indent=2):
         res = ''
         for i in range(indent):
             res += '  '
@@ -106,7 +109,10 @@ class Day7(Day):
         super().__init__(7)
 
     def part_a(self):
-        print(get_dir_from_data(self.get_lines_as_list()).get_formatted_string(0))
+        print(get_dir_from_data(self.get_lines_as_list()))
+        print('__________________________________________________________________')
+        print('\n'.join(d.__str__(2) for d in
+                        get_dirs_with_max_size_rek(get_dir_from_data(self.get_lines_as_list()), 100_000)))
         return np.sum(
             [d.get_size() for d in get_dirs_with_max_size_rek(get_dir_from_data(self.get_lines_as_list()), 100_000)])
 
