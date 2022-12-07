@@ -26,16 +26,6 @@ class Directory:
     def add_file(self, file):
         self.files.append(file)
 
-    def get_dir(self, dir_name: str):
-        if self.name == dir_name:
-            return self
-        for sub in self.directories:
-            if sub.name == dir_name:
-                return sub
-        for sub in self.directories:
-            return sub.get_dir(dir_name)
-        return 'NA'
-
     def __str__(self, indent=2):
         res = ''
         for i in range(indent):
@@ -81,8 +71,11 @@ def get_dir_from_data(lines: list[str]):
                 current_dir = current_dir.parent
         elif lines[i].startswith('$ cd'):
             dir_name = lines[i].split('cd')[1].replace('\n', '').strip()
-            d = root.get_dir(dir_name)
-            current_dir = d if d != 'NA' else Directory(dir_name, current_dir)
+            tmp = None
+            for d in current_dir.directories:
+                if d.name == dir_name:
+                    tmp = d
+            current_dir = tmp if tmp is not None else Directory(dir_name, current_dir)
         else:
             if lines[i].startswith('dir'):
                 dir_name = lines[i].split(' ')[1].replace('\n', '')
@@ -95,7 +88,7 @@ def get_dir_from_data(lines: list[str]):
 
 
 def get_dirs_with_max_size_rek(root_dir: Directory, max_size: int):
-    dirs = []
+    dirs: list[Directory] = []
     for d in root_dir.directories:
         if d.get_size() <= max_size:
             dirs.append(d)
@@ -103,18 +96,36 @@ def get_dirs_with_max_size_rek(root_dir: Directory, max_size: int):
     return dirs
 
 
+def get_dirs(root_dir: Directory):
+    dirs: list[Directory] = [root_dir]
+    for d in root_dir.directories:
+        dirs += get_dirs(d)
+    return dirs
+
+
 class Day7(Day):
 
     def __init__(self):
         super().__init__(7)
+        self.lines = self.get_lines_as_list()
+
+    total_disk_space = 70_000_000
+    space_to_run_update = 30_000_000
 
     def part_a(self):
-        print(get_dir_from_data(self.get_lines_as_list()))
-        print('__________________________________________________________________')
-        print('\n'.join(d.__str__(2) for d in
-                        get_dirs_with_max_size_rek(get_dir_from_data(self.get_lines_as_list()), 100_000)))
         return np.sum(
-            [d.get_size() for d in get_dirs_with_max_size_rek(get_dir_from_data(self.get_lines_as_list()), 100_000)])
+            [d.get_size() for d in get_dirs_with_max_size_rek(get_dir_from_data(self.lines), 100_000)])
 
     def part_b(self):
-        return ' '
+        root_dir: Directory = get_dir_from_data(self.lines)
+        root_dir_size = root_dir.get_size()
+        print(f'root_size: {root_dir_size}')
+        unused_space = self.total_disk_space - root_dir_size
+        print(f'unused_space: {unused_space}')
+        space_needed = self.space_to_run_update - unused_space
+        print(f'space_needed: {space_needed}')
+        sorted_dirs = sorted(get_dirs(get_dir_from_data(self.lines)), key=lambda x: x.get_size(), reverse=False)
+        # print('\n'.join(str(d.get_size()) for d in sorted_dirs))
+        for d in sorted_dirs:
+            if d.get_size() >= space_needed:
+                return d.get_size()
