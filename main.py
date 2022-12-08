@@ -6,7 +6,8 @@ from days.day5 import Day5
 from days.day6 import Day6
 from days.day7 import Day7
 from days.day8 import Day8
+from days.day9 import Day9
 
 if __name__ == '__main__':
-    day = Day8()
+    day = Day9()
     day.print_part_a_and_b_with_time()
