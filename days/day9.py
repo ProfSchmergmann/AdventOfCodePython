@@ -1,15 +1,4 @@
 from days.day import Day
-import numpy as np
-
-
-def read_steps(filename: str):
-    with open(filename, 'r') as file:
-        res = []
-        for line in file.readlines():
-            move = line.split(' ')[0]
-            amount = int(line.split(' ')[1].replace('\n', ''))
-            res.append((move, amount))
-    return res
 
 
 class Day9(Day):
@@ -17,40 +6,63 @@ class Day9(Day):
         super().__init__(9)
 
     def part_a(self):
-        steps: list[tuple[str, int]] = read_steps(self.filename)
-        position_T = (0, 0)
-        current_position_H = (0, 0)
         visited: set[tuple[int, int]] = {(0, 0)}
-        for step in steps:
-            for s in range(step[1]):
-                x_H = current_position_H[0]
-                y_H = current_position_H[1]
-                position_H_plus_1 = current_position_H
-                # Move H
-                if step[0] == 'L':
-                    position_H_plus_1 = (x_H - 1, y_H)
-                elif step[0] == 'U':
-                    position_H_plus_1 = (x_H, y_H + 1)
-                elif step[0] == 'R':
-                    position_H_plus_1 = (x_H + 1, y_H)
-                elif step[0] == 'D':
-                    position_H_plus_1 = (x_H, y_H - 1)
-                x_H = position_H_plus_1[0]
-                y_H = position_H_plus_1[1]
-                x_T = position_T[0]
-                y_T = position_T[1]
-                # If x positions differ by more than 1:
-                if bool(abs(x_H - x_T) > 1) ^ bool(abs(y_H - y_T) > 1):
-                    # Move T to H:
-                    position_T = current_position_H
-                # If positions differ diagonally:
-                elif (abs(x_H - x_T) + abs(y_H - y_T)) > 1:
-                    if (abs(x_H - x_T) + abs(y_H - y_T)) > 2:
-                        # Move T diagonally to H:
-                        position_T = current_position_H
-                current_position_H = position_H_plus_1
-                visited.update({position_T})
+        H = T = [0, 0]
+        for line in self.get_lines_as_list():
+            x, y = line.split()
+            y = int(y)
+
+            for _ in range(y):
+                dx = 1 if x == 'R' else -1 if x == 'L' else 0
+                dy = 1 if x == 'U' else -1 if x == 'D' else 0
+
+                H[0] += dx
+                H[1] += dy
+
+                _x = H[0] - T[0]
+                _y = H[1] - T[1]
+
+                if abs(_x) > 1 or abs(_y) > 1:
+                    if _x == 0:
+                        T[1] += _y // 2
+                    elif _y == 0:
+                        T[0] += _x // 2
+                    else:
+                        T[0] += 1 if _x > 0 else -1
+                        T[1] += 1 if _y > 0 else -1
+
+                visited.add(tuple(T))
         return len(visited)
 
     def part_b(self):
-        return ''
+        visited: set[tuple[int, int]] = {(0, 0)}
+        positions = [[0, 0] for _ in range(10)]
+
+        for line in self.get_lines_as_list():
+            x, y = line.split()
+            y = int(y)
+
+            for _ in range(y):
+                dx = 1 if x == 'R' else -1 if x == 'L' else 0
+                dy = 1 if x == 'U' else -1 if x == 'D' else 0
+
+                positions[0][0] += dx
+                positions[0][1] += dy
+
+                for i in range(9):
+                    H = positions[i]
+                    T = positions[i + 1]
+                    _x = H[0] - T[0]
+                    _y = H[1] - T[1]
+
+                    if abs(_x) > 1 or abs(_y) > 1:
+                        if _x == 0:
+                            T[1] += _y // 2
+                        elif _y == 0:
+                            T[0] += _x // 2
+                        else:
+                            T[0] += 1 if _x > 0 else -1
+                            T[1] += 1 if _y > 0 else -1
+
+                visited.add(tuple(positions[-1]))
+        return len(visited)
