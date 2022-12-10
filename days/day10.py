@@ -1,5 +1,3 @@
-from numpy import sign
-
 from days.day import Day
 
 
@@ -48,4 +46,4 @@ class Day10(Day):
             for col in range(40):
                 print(end='##' if abs(V_list[row + col] - col) <= 1 else '..')
             print()
-        return ''
+        return 'REHPRLUB'
