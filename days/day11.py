@@ -1,6 +1,5 @@
 from days.day import Day
 import operator
-import numpy as np
 
 ops = {'+': operator.add, '*': operator.mul}
 
@@ -87,8 +86,9 @@ class Day11(Day):
         #     print()
         # for monkey in monkeys:
         #     print(f'Monkey {monkey.num} inspected items : {monkey.items_inspected} times.')
-        sorted_inspected_items_list = np.sort([monkey.items_inspected for monkey in monkeys])
-        return sorted_inspected_items_list[-1] * sorted_inspected_items_list[-2]
+        inspected_items_list = [monkey.items_inspected for monkey in monkeys]
+        inspected_items_list.sort()
+        return inspected_items_list[-1] * inspected_items_list[-2]
 
     def part_b(self):
         monkeys = read_monkeys_as_list(self.get_lines_as_list())
@@ -106,5 +106,6 @@ class Day11(Day):
             #     print(f'== After round {i} ==')
             #     for monkey in monkeys:
             #         print(f'Monkey {monkey.num} inspected items : {monkey.items_inspected} times.')
-        sorted_inspected_items_list = np.sort([monkey.items_inspected for monkey in monkeys])
-        return sorted_inspected_items_list[-1] * sorted_inspected_items_list[-2]
+        inspected_items_list = [monkey.items_inspected for monkey in monkeys]
+        inspected_items_list.sort()
+        return inspected_items_list[-1] * inspected_items_list[-2]
