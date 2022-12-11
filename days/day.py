@@ -21,7 +21,7 @@ class Day(ABC):
 
     def print_with_time(self, part):
         res, time_ns, time_s = self.get_res_with_time(part)
-        print(f'Result for Day {self.number} part {part}: {res}, took {time_ns:.2f} ns,'
+        print(f'Result for Day {self.number} part {part}: {res}, took {time_ns:.2e} ns,'
               f' which is {time_s:.2f}s.')
 
     def get_res_with_time(self, part):

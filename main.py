@@ -13,3 +13,14 @@ from days.day9 import Day9
 if __name__ == '__main__':
     day = Day11()
     day.print_part_a_and_b_with_time()
+    day_list = [Day1(),
+                Day2(),
+                Day3(),
+                Day4(),
+                Day5(),
+                Day6(),
+                Day7(),
+                Day8(),
+                Day9(),
+                Day10(),
+                Day11()]
