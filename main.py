@@ -1,6 +1,7 @@
 from days.day1 import Day1
 from days.day10 import Day10
 from days.day11 import Day11
+from days.day12 import Day12
 from days.day2 import Day2
 from days.day3 import Day3
 from days.day4 import Day4
@@ -11,7 +12,7 @@ from days.day8 import Day8
 from days.day9 import Day9
 
 if __name__ == '__main__':
-    day = Day11()
+    day = Day12()
     day.print_part_a_and_b_with_time()
     day_list = [Day1(),
                 Day2(),
