@@ -51,36 +51,6 @@ def bfs(graph, start, end):
                     queue.append((node, path + [node]))
 
 
-def shortest_path(graph, start, end):
-    path_list = [[start]]
-    path_index = 0
-    # To keep track of previously visited nodes
-    previous_nodes = {start}
-    if start == end:
-        return path_list[0]
-
-    while path_index < len(path_list):
-        current_path = path_list[path_index]
-        last_node = current_path[-1]
-        next_nodes = graph[last_node]
-        # Search goal node
-        if end in next_nodes:
-            current_path.append(end)
-            return current_path
-        # Add new paths
-        for next_node in next_nodes:
-            if next_node not in previous_nodes:
-                new_path = current_path[:]
-                new_path.append(next_node)
-                path_list.append(new_path)
-                # To avoid backtracking
-                previous_nodes.add(next_node)
-        # Continue to next path in list
-        path_index += 1
-    # No path is found
-    return []
-
-
 def print_path(path, heightmap):
     diagram = [['.' for _ in range(len(heightmap[0]))] for _ in range(len(heightmap))]
     i = 0
@@ -118,18 +88,38 @@ class Day12(Day):
         for row in range(len(heightmap)):
             for col in range(len(heightmap[row])):
                 if heightmap[row][col] == 'S':
-                    heightmap[row][col] = '`'
+                    heightmap[row][col] = 'a'
                     start = (row, col)
                     continue
                 if heightmap[row][col] == 'E':
-                    heightmap[row][col] = '{'
+                    heightmap[row][col] = 'z'
                     stop = (row, col)
                     continue
         graph = create_graph(heightmap)
-        # path = bfs(graph, start, stop)
-        path = shortest_path(graph, start, stop)
+        path = bfs(graph, start, stop)
         # print_path(path, heightmap)
         return len(path) - 1
 
     def part_b(self):
-        return ''
+        heightmap: list[list[str]] = read_heightmap(self.get_lines_as_list())
+        starts = []
+        stop = (0, 0)
+        for row in range(len(heightmap)):
+            for col in range(len(heightmap[row])):
+                if heightmap[row][col] == 'S' or heightmap[row][col] == 'a':
+                    heightmap[row][col] = 'a'
+                    starts.append((row, col))
+                    continue
+                if heightmap[row][col] == 'E':
+                    heightmap[row][col] = 'z'
+                    stop = (row, col)
+                    continue
+        graph = create_graph(heightmap)
+        paths = []
+        for start in starts:
+            path = bfs(graph, start, stop)
+            if path is not None:
+                paths.append(path)
+
+        paths.sort(key=lambda x: len(x), reverse=True)
+        return len(paths[-1]) - 1
