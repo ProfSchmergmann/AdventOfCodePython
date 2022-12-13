@@ -2,7 +2,7 @@ from days.day import Day
 
 
 def read_heightmap(lines: list[str]) -> list[list[str]]:
-    return [[letter for letter in line] for line in lines]
+    return [[letter for letter in line.strip()] for line in lines]
 
 
 def create_graph(heightmap: list[list[str]]):

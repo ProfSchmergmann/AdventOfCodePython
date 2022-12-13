@@ -17,7 +17,7 @@ class Day(ABC):
 
     def get_lines_as_list(self):
         with open(self.filename, 'r') as file:
-            return [line.strip() for line in file.readlines()]
+            return [line for line in file.readlines()]
 
     def print_with_time(self, part):
         res, time_ns, time_s = self.get_res_with_time(part)
