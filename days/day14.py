@@ -64,34 +64,29 @@ def print_matrix(matrix: np.ndarray):
 def add_sand(matrix: np.ndarray, start: tuple[int, int]):
     current_sand = start
     x = current_sand[1]
-    settled_before = False
-    sand_rock = {1, 6}
+    sand_rock_start = {1, 5, 6}
     for y in range(start[0] + 1, matrix.shape[0]):
         next_possible = matrix[y, x]
         # Rock or sand underneath
-        if next_possible in sand_rock:
+        if next_possible in sand_rock_start:
             # Look diagonally down left
             if x - 1 < 0:
                 # Falls over on the left side
                 return True
-            if matrix[y, x - 1] in sand_rock:
+            if matrix[y, x - 1] in sand_rock_start:
                 # Look diagonally down right
                 if x + 1 >= matrix.shape[1]:
                     # Falls over on the right side
                     return True
-                if matrix[y, x + 1] in sand_rock:
-                    # if settled before
-                    if matrix[y - 1, x] in {5, 6}:
-                        return True
-                    else:
-                        # Sand settles
-                        matrix[y - 1, x] = 6
-                        break
+                if matrix[y, x + 1] in sand_rock_start:
+                    # Sand settles
+                    matrix[y - 1, x] = 6
+                    return False
                 else:
                     x += 1
             else:
                 x -= 1
-    return settled_before
+    return True
 
 
 class Day14(Day):
@@ -101,18 +96,10 @@ class Day14(Day):
 
     def part_a(self):
         matrix = create_matrix(self.get_lines_as_list())
-        # print_matrix(matrix[0])
-        i = 1
+        i = 0
         while not add_sand(matrix[0], matrix[1]):
-            # if i % 100_000 == 0:
-            #     print(f'i = {i}')
-            #     print_matrix(matrix[0])
-            #     print()
-            if i % 100_000 == 0:
-                print(i)
-                print(np.count_nonzero(matrix[0] == 6))
             i += 1
-        return np.count_nonzero(matrix[0] == 6)
+        return i
 
     def part_b(self):
         return ''
