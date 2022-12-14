@@ -71,23 +71,18 @@ def add_sand(matrix: np.ndarray, start: tuple[int, int]):
         # Rock or sand underneath
         if next_possible in sand_rock:
             # Look diagonally down left
-            diag_left = matrix[y, x - 1]
-            if x - 1 < 0 or diag_left in sand_rock:
-                if diag_left < 0:
-                    # Falls over on the left side
-                    settled_before = True
-                    break
+            if x - 1 < 0:
+                # Falls over on the left side
+                return True
+            if matrix[y, x - 1] in sand_rock:
                 # Look diagonally down right
-                diag_right = matrix[y, x + 1]
-                if x + 1 >= matrix.shape[1] or diag_right in sand_rock:
-                    if x + 1 >= matrix.shape[1]:
-                        # Falls over on the right side
-                        settled_before = True
-                        break
+                if x + 1 >= matrix.shape[1]:
+                    # Falls over on the right side
+                    return True
+                if matrix[y, x + 1] in sand_rock:
                     # if settled before
                     if matrix[y - 1, x] in {5, 6}:
-                        settled_before = True
-                        break
+                        return True
                     else:
                         # Sand settles
                         matrix[y - 1, x] = 6
@@ -96,7 +91,6 @@ def add_sand(matrix: np.ndarray, start: tuple[int, int]):
                     x += 1
             else:
                 x -= 1
-
     return settled_before
 
 
@@ -110,10 +104,13 @@ class Day14(Day):
         # print_matrix(matrix[0])
         i = 1
         while not add_sand(matrix[0], matrix[1]):
+            # if i % 100_000 == 0:
+            #     print(f'i = {i}')
+            #     print_matrix(matrix[0])
+            #     print()
             if i % 100_000 == 0:
-                print(f'i = {i}')
-                print_matrix(matrix[0])
-                print()
+                print(i)
+                print(np.count_nonzero(matrix[0] == 6))
             i += 1
         return np.count_nonzero(matrix[0] == 6)
 
