@@ -3,7 +3,7 @@ from days.day import Day
 import numpy as np
 
 
-def create_matrix(lines: list[str]):
+def create_matrix(lines: list[str], floor: bool = False):
     rocks = set()
     for line in lines:
         prev_point = None
@@ -32,15 +32,31 @@ def create_matrix(lines: list[str]):
 
     x_min = min(rocks, key=lambda tup: tup[0])[0]
     x_max = max(rocks, key=lambda tup: tup[0])[0]
+    length_x = x_max - x_min
+    length_x = length_x if not floor else 9 * length_x
     y_min = 0
     y_max = max(rocks, key=lambda tup: tup[1])[1]
+    y_max = y_max if not floor else y_max + 2
+    length_y = y_max - y_min
 
-    matrix: np.ndarray = np.array([[0 for _ in range((x_max - x_min) + 1)] for _ in range((y_max - y_min) + 1)])
+    matrix: np.ndarray = np.array([[0 for _ in range(length_x + 1)] for _ in range(length_y + 1)])
+
     for point in rocks:
-        matrix[point[1] - y_min, point[0] - x_min] = 1
-    # Starting point for sand (500,0) is equal to 5
-    start = (0, 500 - x_min)
-    matrix[0, 500 - x_min] = 5
+        if floor:
+            matrix[point[1] - y_min, (point[0] - x_min) + length_x // 3] = 1
+        else:
+            matrix[point[1] - y_min, point[0] - x_min] = 1
+
+    if floor:
+        start = (0, (500 - x_min) + length_x // 3)
+        # Add floor
+        for x in range(0, matrix.shape[1]):
+            matrix[y_max, x] = 1
+    else:
+        # Starting point for sand (500,0) is equal to 5
+        start = (0, 500 - x_min)
+
+    matrix[start[0], start[1]] = 5
 
     return matrix, start
 
@@ -61,32 +77,55 @@ def print_matrix(matrix: np.ndarray):
         print()
 
 
-def add_sand(matrix: np.ndarray, start: tuple[int, int]):
+def add_sand(matrix: np.ndarray, start: tuple[int, int], part2: bool = False):
     current_sand = start
     x = current_sand[1]
     sand_rock_start = {1, 5, 6}
-    for y in range(start[0] + 1, matrix.shape[0]):
-        next_possible = matrix[y, x]
-        # Rock or sand underneath
-        if next_possible in sand_rock_start:
-            # Look diagonally down left
-            if x - 1 < 0:
-                # Falls over on the left side
-                return True
-            if matrix[y, x - 1] in sand_rock_start:
-                # Look diagonally down right
-                if x + 1 >= matrix.shape[1]:
-                    # Falls over on the right side
+
+    if not part2:
+        for y in range(start[0] + 1, matrix.shape[0]):
+            next_possible = matrix[y, x]
+            # Rock or sand underneath
+            if next_possible in sand_rock_start:
+                # Look diagonally down left
+                if x - 1 < 0:
+                    # Falls over on the left side
                     return True
-                if matrix[y, x + 1] in sand_rock_start:
-                    # Sand settles
-                    matrix[y - 1, x] = 6
-                    return False
+                if matrix[y, x - 1] in sand_rock_start:
+                    # Look diagonally down right
+                    if x + 1 >= matrix.shape[1]:
+                        # Falls over on the right side
+                        return True
+                    if matrix[y, x + 1] in sand_rock_start:
+                        # Sand settles
+                        matrix[y - 1, x] = 6
+                        return False
+                    else:
+                        x += 1
                 else:
-                    x += 1
-            else:
-                x -= 1
-    return True
+                    x -= 1
+        return True
+
+    else:
+        for y in range(start[0] + 1, matrix.shape[0]):
+            next_possible = matrix[y, x]
+            # Rock or sand underneath
+            if next_possible in sand_rock_start:
+                # Look diagonally down left
+                if matrix[y, x - 1] in sand_rock_start:
+                    # Look diagonally down right
+                    if matrix[y, x + 1] in sand_rock_start:
+                        # Sand settles
+                        if matrix[y - 1, x] == 5:
+                            matrix[y - 1, x] = 6
+                            return True
+                        matrix[y - 1, x] = 6
+                        return False
+                    else:
+                        x += 1
+                else:
+                    x -= 1
+        return True
 
 
 class Day14(Day):
@@ -102,4 +141,8 @@ class Day14(Day):
         return i
 
     def part_b(self):
-        return ''
+        matrix = create_matrix(self.get_lines_as_list(), True)
+        i = 1
+        while not add_sand(matrix[0], matrix[1], True):
+            i += 1
+        return i
