@@ -28,7 +28,7 @@ class Day(ABC):
         t0 = time.time_ns()
         res = self.part_a() if part == 'a' else self.part_b()
         t1 = time.time_ns()
-        return res, (t1 - t0), ((t1 - t0) * 10e-9)
+        return res, (t1 - t0), ((t1 - t0) * 1e-9)
 
     def print_part_a_and_b_with_time(self):
         self.print_with_time('a')
