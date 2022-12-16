@@ -15,8 +15,8 @@ from days.day8 import Day8
 from days.day9 import Day9
 
 if __name__ == '__main__':
-    day = Day15()
-    day.print_part_a_and_b_with_time()
+    # day = Day15()
+    # day.print_part_a_and_b_with_time()
     day_list = [Day1(),
                 Day2(),
                 Day3(),
@@ -30,7 +30,6 @@ if __name__ == '__main__':
                 Day11(),
                 Day12(),
                 Day13(),
-                Day14(),
-                Day15()]
-    # for day in day_list:
-    #   day.print_part_a_and_b_with_time()
+                Day14()]
+    for day in day_list:
+      day.print_part_a_and_b_with_time()
