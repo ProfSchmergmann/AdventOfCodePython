@@ -6,6 +6,14 @@ in which I solved some puzzles from 2019 to 2021 with Java.
 
 Below you can find a list of the Days I solved with the correct result and the computing time for each part.
 
+The times are based on computing the results on my tower PC. 
+The specs are:
+- [AMD Ryzen 5 3600](https://www.amd.com/de/products/cpu/amd-ryzen-5-3600)
+- [AMD Radeon RX 5700](https://www.amd.com/de/products/graphics/amd-radeon-rx-5700)
+- 16 GB DDR4 RAM with 3200MHz
+
+---
+
 Result for Day 1 part a: 69206, took 1.72e+06 ns, which is 0.00s.
 
 Result for Day 1 part b: 197400, took 0.00e+00 ns, which is 0.00s.
